@@ -22,11 +22,14 @@ import static com.testspringboot.security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-    private AuthenticationManager authenticationManager;
+//    public interface AuthenticationManager Processes an Authentication request.
+    private AuthenticationManager authManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+    public JWTAuthenticationFilter(AuthenticationManager authManager) {
+        this.authManager = authManager;
     }
+
+    /*attemptAuthentication: where we parse the user's credentials and issue them to the AuthenticationManager.*/
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
@@ -34,7 +37,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try{
             UserEntity creds = new ObjectMapper()
                     .readValue(request.getInputStream(), UserEntity.class);
-            return authenticationManager.authenticate(
+            return authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getEmail(),
                             creds.getPassword(),
@@ -45,13 +48,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
+    /*successfulAuthentication: which is the method called when a user successfully logs in.*/
+    /*We use this method to generate a JWT for this user.*/
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         String token = Jwts.builder()
-                .setSubject(((UserEntity) authResult.getPrincipal()).getName())
+                .setSubject(((UserEntity) authResult.getPrincipal()).getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();

@@ -1,24 +1,48 @@
 package com.testspringboot.controller;
 
-import com.testspringboot.domain.User;
+import com.testspringboot.Dto.UserDto;
+import com.testspringboot.persistance.UserEntity;
+import com.testspringboot.repo.UserRepository;
 import com.testspringboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/findAll")
-    @ResponseBody
-    public List<User> findAll(){
+    private UserRepository userRepository;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+     public List<UserEntity> findAll(){
         return userService.getAllUsers();
     }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public UserDto addUser(@RequestBody UserEntity userEntity){
+        return new UserDto();
+    }
+
+    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
+    public void signUp(@RequestBody UserEntity user){
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
 }

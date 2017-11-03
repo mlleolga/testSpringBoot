@@ -1,6 +1,6 @@
 package com.testspringboot.service.Impl;
 
-import com.testspringboot.domain.User;
+import com.testspringboot.persistance.UserEntity;
 import com.testspringboot.repo.UserRepository;
 import com.testspringboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,18 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public UserEntity findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public UserEntity findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
 

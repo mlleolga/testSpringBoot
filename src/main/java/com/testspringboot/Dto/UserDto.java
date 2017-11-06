@@ -1,29 +1,23 @@
 package com.testspringboot.Dto;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 public class UserDto {
 
+    @NotNull
     private String name;
+    @NotNull
     private String email;
+    @NotNull
     private String password;
-    private String passwordConfirm;
 
     public UserDto() {
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -40,5 +34,13 @@ public class UserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

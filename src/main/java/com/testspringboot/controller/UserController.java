@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
+     @Autowired
     private UserService userService;
 
     private UserRepository userRepository;
@@ -39,10 +39,11 @@ public class UserController {
         return new UserDto();
     }
 
-    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
-    public void signUp(@RequestBody UserEntity user){
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+   @RequestMapping(value = "/sign-up", method = RequestMethod.POST, consumes = "application/json")
+    public boolean signUp(@RequestBody UserDto user){
+        return userService.saveNewUser(user);
     }
+
+
 
 }

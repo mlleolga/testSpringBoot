@@ -3,20 +3,30 @@ package com.testspringboot.persistance;
 import javax.persistence.*;
 import java.util.List;
 
+
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity{ // implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+
+    @Column(name = "name")
+    private String username;
     private String email;
     private String password;
-    private String passwordConfirm;
+    private String phone;
+    private String dbId;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<IntegrationEntity> integrationEntities;
+
+    public UserEntity() {
+    }
+
+    public <T> UserEntity(String email, String password, List<T> ts) {
+    }
 
     public List<IntegrationEntity> getIntegrationEntities() {
         return integrationEntities;
@@ -26,16 +36,6 @@ public class UserEntity {
         this.integrationEntities = integrationEntities;
     }
 
-    public UserEntity() {
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
 
     public String getEmail() {
         return email;
@@ -61,12 +61,12 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPhone() {
@@ -77,5 +77,44 @@ public class UserEntity {
         this.phone = phone;
     }
 
-    private String phone;
+    public String getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(String dbId) {
+        this.dbId = dbId;
+    }
+
+/*
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+*/
+
 }

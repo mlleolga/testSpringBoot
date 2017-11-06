@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService{
     public boolean saveNewUser(UserDto userDto) {
         UserEntity user = new UserEntity();
         user.setEmail(userDto.getEmail());
-        return Objects.isNull(userRepository.findByEmail(userDto.getEmail())) ? saveUser(userDto, user) : false;
+        return Objects.isNull(userRepository.findByEmail(userDto.getEmail())) && saveUser(userDto, user);
     }
 
     private boolean saveUser(UserDto userDto, UserEntity userEntity) {

@@ -1,6 +1,7 @@
 package com.testspringboot.persistance;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,13 @@ public class IntegrationEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Enumerated(EnumType.STRING)
     private IntegrationType integrationType;
+
+    @Column(name = "api_key", length = 128, nullable = false, unique = true)
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    private String apiKey;
 
     @NotNull
     private String name;
@@ -48,5 +55,21 @@ public class IntegrationEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public IntegrationType getIntegrationType() {
+        return integrationType;
+    }
+
+    public void setIntegrationType(IntegrationType integrationType) {
+        this.integrationType = integrationType;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

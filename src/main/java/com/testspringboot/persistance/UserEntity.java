@@ -11,16 +11,25 @@ public class UserEntity{ // implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     @Column(name = "name")
     private String username;
+
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @Column(name = "password", nullable = false)
     private String password;
+    
     private String phone;
-    private String dbId;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<IntegrationEntity> integrationEntities;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private BalanceEntity balance;
+
+
 
     public UserEntity() {
     }
@@ -77,15 +86,15 @@ public class UserEntity{ // implements UserDetails {
         this.phone = phone;
     }
 
-    public String getDbId() {
-        return dbId;
+    public BalanceEntity getBalance() {
+        return balance;
     }
 
-    public void setDbId(String dbId) {
-        this.dbId = dbId;
+    public void setBalance(BalanceEntity balance) {
+        this.balance = balance;
     }
 
-/*
+    /*
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

@@ -7,6 +7,7 @@ import org.redisson.config.Config;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 @Component
 public class RedisClient {
@@ -24,11 +25,15 @@ public class RedisClient {
 
         config.useSingleServer().setAddress("redis://127.0.0.1:6379").  setDatabase(0);
         this.redisson = Redisson.create(config);
-//        RSetCache<String> userIds = getSetCache("recently_updated_balance");
-//        userIds.add("sasha1",1, TimeUnit.HOURS);
+     /*   RSetCache<String> userIds = getSetCache("recently_updated_balance");
+        userIds.add("sasha1",1, TimeUnit.MINUTES);*/
 
     }
 
+    @PreDestroy
+    private void destroy(){
+        this.redisson.shutdown();
+    }
 
     public <V> RSetCache<V> getSetCache(String category) {
         return redisson.getSetCache(category);

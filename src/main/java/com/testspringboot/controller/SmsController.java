@@ -19,6 +19,4 @@ public class SmsController {
     public void sendSms(Authentication authResult, @RequestBody SmsRequest request){
         smsService.saveMessage((String) authResult.getPrincipal(), request);
     }
-
-
 }

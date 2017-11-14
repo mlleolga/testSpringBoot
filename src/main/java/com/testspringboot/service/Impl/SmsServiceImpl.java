@@ -41,7 +41,7 @@ public class SmsServiceImpl implements SmsService {
         sentMessages.setIntegrationApiKey(request.getIntegrationApiKey());
         sentMessages.setCreatedDate(new Date(System.currentTimeMillis()));
         sentMessages.setRateMessage(rateSms());
-
+        sentMessages.setUserId(user.getId());
         smsRepository.save(sentMessages);
 
         /*Save sms user into Redis*/
@@ -52,6 +52,7 @@ public class SmsServiceImpl implements SmsService {
         userToUpdateBalance.setUserId(user.getId());
         redisSet.add(userToUpdateBalance);
 
+    //    smsRepository.getSumOfSmsRate(user.getId().toString(), getDateHourAgo() ,new Date(System.currentTimeMillis()));
     }
 
     private void validateIntegration(UserEntity user, String apiKey){

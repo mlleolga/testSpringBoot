@@ -24,8 +24,7 @@ public class BalanceController {
 
     @RequestMapping(method = RequestMethod.POST)
     public void updateBalance(Authentication authResult,@RequestBody BalanceRequest balanceRequest){
-
-        balanceService.updateBalance ((String) authResult.getPrincipal(), balanceRequest);
+        balanceService.updateBalance((String) authResult.getPrincipal(), balanceRequest);
     }
 
 

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BalanceService {
 
-    public BalanceResponse getBalance(String userName);
-    public void updateBalance(String userName, BalanceRequest request);
+    BalanceResponse getBalance(String userName);
+    void updateBalance(String userName, BalanceRequest request);
 }

@@ -2,15 +2,19 @@ package com.testspringboot.service.Impl;
 
 import com.testspringboot.Dto.BalanceRequest;
 import com.testspringboot.Dto.BalanceResponse;
+import com.testspringboot.Dto.HistoryRequest;
 import com.testspringboot.persistance.BalanceEntity;
+import com.testspringboot.persistance.HistoryType;
 import com.testspringboot.persistance.UserEntity;
 import com.testspringboot.repo.BalanceRepository;
 import com.testspringboot.repo.SmsRepository;
 import com.testspringboot.repo.UserRepository;
 import com.testspringboot.service.BalanceService;
+import com.testspringboot.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 @Service
@@ -24,6 +28,9 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Autowired
     private SmsRepository smsRepository;
+
+    @Autowired
+    private HistoryService historyService;
 
     @Override
     public BalanceResponse getBalance(String userName) {
@@ -43,6 +50,7 @@ public class BalanceServiceImpl implements BalanceService {
         balance.setBalance(balance.getBalance().add(request.getValueToUpdate()));
         balance.setModifiedDate(new Date(System.currentTimeMillis()));
         balanceRepository.save(balance);
+        historyService.logHistory(createHistoryRequest(balance, request));
     }
 
     private BalanceResponse getBalanceResponse(UserEntity user) {
@@ -51,6 +59,16 @@ public class BalanceServiceImpl implements BalanceService {
         balanceResponse.setUserId(user.getEmail());
         balanceResponse.setLastUpdatedDate(user.getBalance().getModifiedDate());
         return balanceResponse;
+    }
+
+    private HistoryRequest createHistoryRequest(BalanceEntity balanceEntity, BalanceRequest balanceRequest){
+        HistoryRequest historyRequest = new HistoryRequest();
+        historyRequest.setUserId(balanceEntity.getUser().getId());
+        historyRequest.setHistoryType(HistoryType.UPDATE_BALANCE.name());
+        DecimalFormat df = new DecimalFormat("#.##");
+        historyRequest.setHistoryContent(String.format("balance was changed on sum = " + balanceRequest.getValueToUpdate()
+                + ", current balance = " + df.format(balanceEntity.getBalance())));
+        return historyRequest;
     }
 
 

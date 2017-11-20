@@ -29,7 +29,8 @@ public class UserEntity{ // implements UserDetails {
             fetch = FetchType.LAZY)
     private BalanceEntity balance;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<HistoryEntity> userHistory;
 
     public UserEntity() {
     }
@@ -45,6 +46,13 @@ public class UserEntity{ // implements UserDetails {
         this.integrationEntities = integrationEntities;
     }
 
+    public List<HistoryEntity> getUserHistory() {
+        return userHistory;
+    }
+
+    public void setUserHistory(List<HistoryEntity> userHistory) {
+        this.userHistory = userHistory;
+    }
 
     public String getEmail() {
         return email;

@@ -1,12 +1,15 @@
 package com.testspringboot.service.Impl;
 
+import com.testspringboot.Dto.HistoryRequest;
 import com.testspringboot.Dto.IntegrationRequest;
 import com.testspringboot.Dto.IntegrationResponse;
+import com.testspringboot.persistance.HistoryType;
 import com.testspringboot.persistance.IntegrationEntity;
 import com.testspringboot.persistance.IntegrationType;
 import com.testspringboot.persistance.UserEntity;
 import com.testspringboot.repo.IntegrationRepository;
 import com.testspringboot.repo.UserRepository;
+import com.testspringboot.service.HistoryService;
 import com.testspringboot.service.IntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private HistoryService historyService;
+
     @Override
     public IntegrationResponse createIntegration(String userName, IntegrationRequest integrationRequest) {
         UserEntity user = userRepository.findByUsername(userName);
@@ -32,7 +38,9 @@ public class IntegrationServiceImpl implements IntegrationService {
         integrationEntity.setIntegrationType(IntegrationType.valueOf(integrationRequest.getTypeOfIntegration()));
         integrationEntity.setName(integrationRequest.getName());
         integrationEntity = integrationRepository.save(integrationEntity);
+        historyService.logHistory(createHistoryRequest(integrationEntity, integrationRequest));
         return getIntegrationResponse(integrationEntity);
+
     }
 
     @Override
@@ -78,5 +86,15 @@ public class IntegrationServiceImpl implements IntegrationService {
        return null;
 
     }
+
+    private HistoryRequest createHistoryRequest(IntegrationEntity integrationEntity, IntegrationRequest integrationRequest){
+        HistoryRequest historyRequest = new HistoryRequest();
+        historyRequest.setUserId(integrationEntity.getUserEntity().getId());
+        historyRequest.setHistoryType(HistoryType.CREATE_INTEGRATION.name());
+        historyRequest.setHistoryContent("created integration: " + integrationRequest.getTypeOfIntegration() + ": " + integrationRequest.getName()
+                + " for user " + integrationEntity.getUserEntity().getUsername());
+        return historyRequest;
+    }
+
 }
 

@@ -53,7 +53,7 @@ public class ScheduledTasks {
 //        }
         redisSet.forEach(userToUpdateBalance -> {
             BigDecimal summ = new BigDecimal(smsRepository.getSumOfSmsRate(userToUpdateBalance.getUserId().toString(), getDateHourAgo() ,new Date(System.currentTimeMillis())));
-            balanceService.updateBalance(userRepository.findById(userToUpdateBalance.getUserId()).getUsername(), getBalanceRequest(summ));
+            balanceService.updateBalance(userRepository.findOne(userToUpdateBalance.getUserId()).getUsername(), getBalanceRequest(summ));
             redisSet.remove(userToUpdateBalance);
         });
         log.info("The time is now {}", dateFormat.format(new Date()));

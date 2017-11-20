@@ -45,6 +45,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index.html").permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.LOGIN_URL).permitAll()
+                .antMatchers(HttpMethod.GET, "/javainuse-kafka").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // We filter the api/login requests

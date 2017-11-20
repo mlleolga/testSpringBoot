@@ -1,6 +1,8 @@
 package com.testspringboot.service.Impl;
 
+import com.testspringboot.Dto.HistoryRequest;
 import com.testspringboot.Dto.SmsRequest;
+import com.testspringboot.persistance.HistoryType;
 import com.testspringboot.persistance.IntegrationEntity;
 import com.testspringboot.persistance.SentMessages;
 import com.testspringboot.persistance.UserEntity;
@@ -8,6 +10,7 @@ import com.testspringboot.redis.RedisClient;
 import com.testspringboot.redis.redisRequest.UserToUpdateBalance;
 import com.testspringboot.repo.SmsRepository;
 import com.testspringboot.repo.UserRepository;
+import com.testspringboot.service.HistoryService;
 import com.testspringboot.service.SmsService;
 import org.redisson.api.RSetCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,9 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private HistoryService historyService;
+
     private static final String REDIS_KEY = "users_to_update_balance";
 
     @Override
@@ -43,6 +49,8 @@ public class SmsServiceImpl implements SmsService {
         sentMessages.setRateMessage(rateSms());
         sentMessages.setUserId(user.getId());
         smsRepository.save(sentMessages);
+
+        historyService.logHistory(createHistoryRequest(sentMessages, request));
 
         /*Save sms user into Redis*/
 
@@ -69,5 +77,13 @@ public class SmsServiceImpl implements SmsService {
         Random r = new Random();
         double randomValue = 0.001 + (0.25 - 0.001) * r.nextDouble();
         return new BigDecimal(randomValue);
+    }
+
+    private HistoryRequest createHistoryRequest(SentMessages sentMessages, SmsRequest smsRequest){
+        HistoryRequest historyRequest = new HistoryRequest();
+        historyRequest.setUserId(sentMessages.getUserId());
+        historyRequest.setHistoryType(HistoryType.SAVE_MESSAGE.name());
+        historyRequest.setHistoryContent("message created " + sentMessages.getCreatedDate()+ " by userId " + sentMessages.getUserId() + " was saved");
+        return historyRequest;
     }
 }
